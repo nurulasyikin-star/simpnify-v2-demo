@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# simpnify-v2-demo
 
-## Getting Started
+Marketing website **demo** for Simpnify (review only — no API).
 
-First, run the development server:
+- **Stack:** Next.js + shadcn/ui + Tailwind
+- **Version switch:** Header → **Version** dropdown → Version 1 / Version 2 (`?v=1` / `?v=2`)
+
+## Local dev
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000/our-platform?v=2](http://localhost:3000/our-platform?v=2)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy preview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Vercel (recommended):** Import this GitHub repo → automatic preview on every push/PR
+- **GitHub Pages:** Requires `output: 'export'` in `next.config.ts` (not configured yet)
 
-## Learn More
+## Routes
 
-To learn more about Next.js, take a look at the following resources:
+| Path | Description |
+| --- | --- |
+| `/` | Redirects to `/our-platform?v=2` |
+| `/our-platform?v=1` | V1 reference layout |
+| `/our-platform?v=2` | V2 redesign preview |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Remote
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+git remote add origin git@github.com:nurulasyikin-star/simpnify-v2-demo.git
+git push -u origin main
+```
