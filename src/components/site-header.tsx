@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -39,7 +39,7 @@ export function SiteHeader() {
             className="flex items-center gap-2.5 transition hover:opacity-80"
             aria-label="Simpnify platform"
           >
-            <Image
+            <PlatformImage
               src="/simpnify-mark.png"
               alt=""
               width={36}
@@ -47,7 +47,7 @@ export function SiteHeader() {
               className="h-9 w-9"
               priority
             />
-            <Image
+            <PlatformImage
               src="/simpnify-wordmark.png"
               alt="Simpnify"
               width={140}

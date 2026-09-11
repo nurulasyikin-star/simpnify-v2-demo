@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { PlatformPageShell } from "@/components/platform/page-shell";
@@ -22,7 +22,7 @@ export function SolutionSpokePage({
         <div className="mx-auto max-w-7xl">
           <div className="platform-product-frame mb-12">
             <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[#0d1418]">
-              <Image
+              <PlatformImage
                 src={scenario.image}
                 alt={scenario.alt}
                 fill

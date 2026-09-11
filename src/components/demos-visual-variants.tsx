@@ -2,7 +2,7 @@
 
 import type { ComponentType } from "react";
 import { createElement, useState } from "react";
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 import type { DemosVisualVariantId } from "@/components/demos-visual-variants-meta";
 import {
@@ -56,7 +56,7 @@ function DemoScreenshot({
   const { src, alt } = getDemoCardImage(card);
 
   return (
-    <Image
+    <PlatformImage
       src={src}
       alt={alt}
       fill
@@ -120,7 +120,7 @@ function DemoStepRail({
                         : "border-white/15 group-hover:border-white/30",
                     )}
                   >
-                    <Image
+                    <PlatformImage
                       src={src}
                       alt=""
                       fill

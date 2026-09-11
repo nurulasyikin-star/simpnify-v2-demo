@@ -2,7 +2,7 @@
 
 import type { ComponentType, CSSProperties } from "react";
 import { createElement, useCallback, useState } from "react";
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import type { FeatureCarouselVariantId } from "@/components/feature-carousel-variants-meta";
@@ -86,7 +86,7 @@ function SlideStage({
           )}
           aria-hidden={index !== activeIndex}
         >
-          <Image
+          <PlatformImage
             src={slide.image}
             alt={index === activeIndex ? slide.alt : ""}
             fill
@@ -615,7 +615,7 @@ export function FeatureCarouselVariantFilmstrip() {
                   )}
                 >
                   <span className="relative block aspect-[16/10] bg-[#0d1418]">
-                    <Image
+                    <PlatformImage
                       src={slide.image}
                       alt=""
                       fill

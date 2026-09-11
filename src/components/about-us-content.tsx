@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import { Building2, Globe2, Shield, Users } from "lucide-react";
 
 import { AboutPledgeSpotlight } from "@/components/about-pledge-spotlight";
@@ -37,7 +37,7 @@ export function AboutUsContent() {
     <div className="space-y-16 md:space-y-20">
       <div className="platform-product-frame mx-auto max-w-4xl">
         <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-[#0d1418]">
-          <Image
+          <PlatformImage
             src="/platform/architecture.webp"
             alt="Simpnify unified platform architecture"
             fill

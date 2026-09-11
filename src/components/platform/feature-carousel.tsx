@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import { useCallback, useEffect, useState } from "react";
 
 import { PlatformSectionHeader } from "@/components/platform-section-header";
@@ -109,7 +109,7 @@ export function PlatformFeatureCarousel({
                   )}
                   aria-hidden={index !== activeIndex}
                 >
-                  <Image
+                  <PlatformImage
                     src={image}
                     alt={index === activeIndex ? alt : ""}
                     fill

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 import { PLATFORM_SOLUTION } from "@/lib/platform";
 
@@ -24,7 +24,7 @@ export function PlatformSolution() {
             >
               <div className="aspect-[4/3] overflow-hidden rounded-lg bg-[#0d1418]">
                 <div className="relative h-full w-full">
-                  <Image
+                  <PlatformImage
                     src={src}
                     alt={alt}
                     fill

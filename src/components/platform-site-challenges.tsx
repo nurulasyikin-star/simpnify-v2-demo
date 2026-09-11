@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 import { SITE_CHALLENGES, UNIFIED_OPERATION_ITEMS } from "@/lib/platform";
 
@@ -22,7 +22,7 @@ export function PlatformSiteChallenges() {
               style={{ animationDelay: `${Number(number) * 80}ms` }}
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg bg-[#0d1418]">
-                <Image
+                <PlatformImage
                   src={image}
                   alt={alt}
                   fill

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 type Partner = {
   name: string;
@@ -38,7 +38,7 @@ function PartnerLogoMark({ partner }: { partner: Partner }) {
   if (partner.logo) {
     return (
       <div className="flex h-20 w-full max-w-[240px] items-center justify-center">
-        <Image
+        <PlatformImage
           src={partner.logo.src}
           alt=""
           width={partner.logo.width}

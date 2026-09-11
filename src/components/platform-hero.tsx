@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { PlatformAccentBar } from "@/components/platform-accent-bar";
@@ -61,7 +61,7 @@ export function PlatformHero() {
             />
             <div className="aspect-[3/2] overflow-hidden rounded-lg bg-[#0d1418]">
               <div className="relative h-full w-full">
-                <Image
+                <PlatformImage
                   src="/platform/hero-platform-ui.webp"
                   alt="Simpnify Floor Plan Studio showing an industrial building sample"
                   fill

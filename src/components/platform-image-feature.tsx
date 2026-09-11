@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 import { cn } from "@/lib/utils";
 import type { ImageFeature } from "@/lib/platform/types";
@@ -48,7 +48,7 @@ export function PlatformImageFeature({
         <div className="platform-product-frame relative w-full animate-in fade-in zoom-in-95 fill-mode-both duration-700">
           <div className="aspect-[3/2] overflow-hidden rounded-lg bg-[#0d1418]">
             <div className="relative h-full w-full">
-              <Image
+              <PlatformImage
                 src={image}
                 alt={alt}
                 fill

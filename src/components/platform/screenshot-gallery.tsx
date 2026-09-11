@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 import { X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -22,7 +22,7 @@ function GalleryCardContent({
   return (
     <>
       <div className="relative aspect-[16/10] overflow-hidden rounded-xl">
-        <Image
+        <PlatformImage
           src={item.src}
           alt={item.alt}
           fill
@@ -114,7 +114,7 @@ export function ScreenshotGallery({ items }: ScreenshotGalleryProps) {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0c1a22]">
-              <Image
+              <PlatformImage
                 src={preview.src}
                 alt={preview.alt}
                 fill

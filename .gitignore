@@ -20,6 +20,9 @@
 # production
 /build
 
+# PDF pipeline intermediates (regenerate locally; not needed for deploy)
+/public/platform/source/
+
 # misc
 .DS_Store
 *.pem

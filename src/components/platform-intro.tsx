@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 
 import { PLATFORM_INTRO } from "@/lib/platform";
 
@@ -23,7 +23,7 @@ export function PlatformIntro() {
         <div className="platform-product-frame relative w-full animate-in fade-in zoom-in-95 fill-mode-both duration-700">
           <div className="aspect-[4/3] overflow-hidden rounded-lg bg-[#0d1418]">
             <div className="relative h-full w-full">
-              <Image
+              <PlatformImage
                 src={image}
                 alt={alt}
                 fill

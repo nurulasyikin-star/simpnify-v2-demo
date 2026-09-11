@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import { CheckCircle2 } from "lucide-react";
 
 import { WHY_SIMPNIFY_POINTS } from "@/lib/platform";
@@ -38,7 +38,7 @@ export function PlatformWhySimpnify() {
         <div className="platform-product-frame relative w-full animate-in fade-in zoom-in-95 fill-mode-both duration-700">
           <div className="aspect-[4/5] overflow-hidden rounded-lg bg-[#0d1418]">
             <div className="relative h-full w-full">
-              <Image
+              <PlatformImage
                 src="/platform/our-platform-site/jdm.png"
                 alt="Joint Decision Model (JDM) supporting JESIP-aligned response"
                 fill

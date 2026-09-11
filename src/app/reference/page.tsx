@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { PlatformPageShell } from "@/components/platform/page-shell";
@@ -63,7 +63,7 @@ export default function ReferencePage() {
           </h2>
           <div className="mt-8 platform-product-frame">
             <div className="relative aspect-[16/7] overflow-hidden rounded-xl">
-              <Image
+              <PlatformImage
                 src="/platform/architecture.webp"
                 alt="Simpnify conceptual architecture diagram"
                 fill

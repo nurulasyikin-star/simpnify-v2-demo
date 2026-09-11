@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { FollowUsOn } from "@/components/follow-us-on";
@@ -65,7 +65,7 @@ export function SiteFooter() {
               className="flex items-center gap-2.5 transition hover:opacity-80"
               aria-label="Simpnify platform"
             >
-              <Image
+              <PlatformImage
                 src="/simpnify-mark.png"
                 alt=""
                 width={32}

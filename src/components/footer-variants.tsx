@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import Image from "next/image";
+import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { FollowUsOn } from "@/components/follow-us-on";
@@ -295,7 +295,7 @@ export function FooterVariantMultiColumn() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
           <div className="lg:col-span-2">
             <div className="flex items-center gap-2.5">
-              <Image
+              <PlatformImage
                 src="/simpnify-mark.png"
                 alt=""
                 width={32}
