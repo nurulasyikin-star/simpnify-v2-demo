@@ -1,71 +1,83 @@
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import Link from "next/link";
 
-type PlatformHeroProps = {
-  version: "1" | "2";
-};
+import { PlatformAccentBar } from "@/components/platform-accent-bar";
 
-export function PlatformHero({ version }: PlatformHeroProps) {
-  const isV2 = version === "2";
-
+export function PlatformHero() {
   return (
-    <section className="bg-black px-6 py-12 md:px-16 md:py-16">
-      <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
+    <section className="relative overflow-hidden bg-[var(--platform-surface)] px-6 py-12 md:px-16 md:py-20">
+      <div className="platform-scan-bg" aria-hidden />
+
+      <div className="relative z-10 mx-auto grid max-w-7xl gap-12 lg:grid-cols-2 lg:items-center">
         <div className="flex gap-7">
-          <div className="relative w-0.5 shrink-0 bg-[#5a5a5f]">
-            <div className="absolute top-0 h-16 w-0.5 bg-white" />
-          </div>
+          <PlatformAccentBar />
           <div className="space-y-5">
-            <p className="text-sm tracking-wide text-[#8a8a92]">INTRO</p>
-            <h1 className="text-5xl font-normal text-white md:text-6xl">
-              Simpnify
-            </h1>
-            {isV2 ? (
-              <p className="text-lg font-medium text-[#9398ff]">
-                See the site. Coordinate the response.
-              </p>
-            ) : null}
-            <p className="max-w-xl text-base leading-7 text-white/90 md:text-lg">
-              Simpnify is an unified threats and risks management software
-              platform that integrate physical security, safety and cyber
-              security systems and functions, to enable collaboration and
-              interoperability for enterprise-wide risks and threats handling.
+            <p className="text-sm font-semibold tracking-wide text-secondary">
+              SIMPNIFY / UNIFIED PLATFORM
             </p>
-            {isV2 ? (
-              <button
-                type="button"
-                className="rounded-full bg-gradient-to-b from-[#f5f6f8] to-[#dbdee3] px-6 py-3 text-sm font-semibold text-[#1e1e22]"
-              >
-                Watch Demo
-              </button>
-            ) : null}
+            <p className="max-w-xl text-lg leading-7 text-platform-muted md:text-xl">
+              When systems don&apos;t connect, every incident costs more.
+            </p>
+            <h1 className="text-5xl font-semibold text-white md:text-6xl">
+              See the site.
+              <br />
+              Coordinate the response.
+            </h1>
+            <p className="text-lg font-medium text-secondary">
+              Industrial & critical infrastructure
+            </p>
+            <p className="max-w-xl text-base leading-7 text-platform-muted md:text-lg">
+              One operational story from the first alert to the final review —
+              connecting signals, people, procedures and evidence.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link href="/demos" className="platform-btn-primary">
+                Open product tour
+              </Link>
+              <Link href="/platform" className="platform-btn-secondary">
+                Explore modules
+              </Link>
+            </div>
           </div>
         </div>
 
         <div className="flex flex-col items-center">
-          <div
-            className={cn(
-              "w-full rounded-2xl border border-white/10 bg-[#141418] p-3 shadow-2xl",
-              isV2 ? "ring-1 ring-[#b8c7f2]/30" : "",
-            )}
-          >
-            <div className="aspect-video overflow-hidden rounded-lg bg-[#0d0d10]">
-              <div className="flex h-full">
-                <div className="w-12 bg-[#0a0a0c]" />
-                <div className="flex flex-1 flex-col">
-                  <div className="relative flex-1 bg-[#1a1f24]">
-                    <div className="absolute left-1/3 top-1/4 h-24 w-40 rounded-full border-2 border-green-400/70 bg-green-500/20" />
-                    <p className="absolute inset-0 flex items-center justify-center text-sm text-white/70">
-                      {isV2
-                        ? "Simpnify — Fire Alarm Handling (V2)"
-                        : "Simpnify — Fire Alarm Handling Screenshot"}
-                    </p>
-                  </div>
-                  <div className="h-20 bg-[#111114]" />
-                </div>
+          <div className="platform-product-frame relative w-full animate-in fade-in zoom-in-95 fill-mode-both duration-700">
+            <span
+              className="platform-scan-corner -left-1 -top-1 border-l-2 border-t-2"
+              aria-hidden
+            />
+            <span
+              className="platform-scan-corner -right-1 -top-1 border-r-2 border-t-2"
+              aria-hidden
+            />
+            <span
+              className="platform-scan-corner -bottom-1 -left-1 border-b-2 border-l-2"
+              aria-hidden
+            />
+            <span
+              className="platform-scan-corner -bottom-1 -right-1 border-b-2 border-r-2"
+              aria-hidden
+            />
+            <div className="aspect-[3/2] overflow-hidden rounded-lg bg-[#0d1418]">
+              <div className="relative h-full w-full">
+                <Image
+                  src="/platform/hero-platform-ui.webp"
+                  alt="Simpnify Floor Plan Studio showing an industrial building sample"
+                  fill
+                  className="object-cover object-top"
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
               </div>
             </div>
           </div>
-          <div className="mt-0 h-3 w-28 rounded bg-[#2e2e33]" />
+          <Link
+            href="/partners"
+            className="mt-4 text-xs text-platform-muted transition hover:text-secondary"
+          >
+            Delivered in alliance with technology partners
+          </Link>
         </div>
       </div>
     </section>

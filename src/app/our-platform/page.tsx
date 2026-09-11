@@ -1,35 +1,38 @@
-import { PlatformHero } from "@/components/platform-hero";
+import type { Metadata } from "next";
 
-type OurPlatformPageProps = {
-  searchParams: Promise<{ v?: string }>;
+import { PlatformChallenge } from "@/components/platform-challenge";
+import { PlatformCta } from "@/components/platform-cta";
+import { PlatformHero } from "@/components/platform-hero";
+import { PlatformIntro } from "@/components/platform-intro";
+import { PlatformOperatingModel } from "@/components/platform-operating-model";
+import { PlatformSiteChallenges } from "@/components/platform-site-challenges";
+import { PlatformSolution } from "@/components/platform-solution";
+import { PlatformSopDigitalTwin } from "@/components/platform-sop-digital-twin";
+import { PlatformValuePillars } from "@/components/platform-value-pillars";
+import { PlatformWhySimpnify } from "@/components/platform-why-simpnify";
+import { PlatformStatBar } from "@/components/platform/stat-bar";
+import { COMPANY_STATS } from "@/lib/platform";
+
+export const metadata: Metadata = {
+  title: "Simpnify Platform — Industrial & Critical Infrastructure",
+  description:
+    "Unified platform for industrial and critical infrastructure. See the site, coordinate the response, and keep the proof — from first alert to final review.",
 };
 
-export default async function OurPlatformPage({
-  searchParams,
-}: OurPlatformPageProps) {
-  const params = await searchParams;
-  const version = params.v === "1" ? "1" : "2";
-
+export default function OurPlatformPage() {
   return (
-    <main>
-      <PlatformHero version={version} />
-      <section className="border-t border-white/10 bg-[#0a0a0c] px-6 py-16 md:px-16">
-        <div className="mx-auto max-w-7xl">
-          <p className="mb-2 text-sm font-semibold text-[#9398ff]">
-            Demo · Version {version}
-          </p>
-          <h2 className="mb-4 text-3xl font-semibold text-white">
-            {version === "2"
-              ? "Our Platform — redesign preview"
-              : "Our Platform — current reference"}
-          </h2>
-          <p className="max-w-3xl text-base leading-7 text-[#8a8a92]">
-            {version === "2"
-              ? "This is the V2 demo shell. More sections (challenges, solution, demo CTA) can be added on this branch for review."
-              : "Version 1 mirrors the current live intro layout. Switch to Version 2 in the header dropdown to preview the redesign direction."}
-          </p>
-        </div>
-      </section>
+    <main id="main-content" className="pt-16">
+      <PlatformHero />
+      <PlatformStatBar stats={COMPANY_STATS} />
+      <PlatformIntro />
+      <PlatformSiteChallenges />
+      <PlatformChallenge />
+      <PlatformSolution />
+      <PlatformOperatingModel />
+      <PlatformWhySimpnify />
+      <PlatformSopDigitalTwin />
+      <PlatformValuePillars />
+      <PlatformCta />
     </main>
   );
 }

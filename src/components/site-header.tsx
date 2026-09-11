@@ -1,102 +1,118 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { primaryNav as NAV_ITEMS } from "@/config/site-nav";
 
-const NAV_ITEMS = [
-  { label: "About", href: "#" },
-  { label: "Simpnify Platform", href: "/our-platform" },
-  { label: "Demo", href: "#" },
-  { label: "News", href: "#" },
-  { label: "Contacts", href: "#" },
-] as const;
-
-function NavPill({
-  label,
-  href,
-  active,
-}: {
-  label: string;
-  href: string;
-  active?: boolean;
-}) {
-  const className = cn(
-    "rounded-full px-5 py-2.5 text-sm font-medium text-[#1e1e22] transition-colors",
-    "bg-gradient-to-b from-[#f5f6f8] to-[#dbdee3]",
-    active && "from-[#c7d0fa] to-[#9eaddf]",
+const navLinkClass = (isActive: boolean) =>
+  cn(
+    "transition hover:text-secondary focus-visible:text-secondary",
+    isActive ? "text-secondary" : "text-white/90",
   );
-
-  if (href === "#") {
-    return (
-      <button type="button" className={className}>
-        {label}
-      </button>
-    );
-  }
-
-  return (
-    <Link href={href} className={className}>
-      {label}
-    </Link>
-  );
-}
 
 export function SiteHeader() {
+  const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const version = searchParams.get("v") === "1" ? "1" : "2";
 
-  const setVersion = (next: "1" | "2") => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("v", next);
-    const query = params.toString();
-    router.push(`${pathname}${query ? `?${query}` : ""}`);
+  const isNavActive = (href: string) => {
+    if (href === "/demos") {
+      return pathname === "/demos" || pathname.startsWith("/demo/");
+    }
+    return pathname === href || (href !== "/" && pathname.startsWith(href));
   };
 
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   return (
-    <header className="border-b border-white/10 bg-black">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-7 md:px-16">
-        <Link href="/our-platform" className="text-2xl font-normal text-[#b8c7f2]">
-          Simpnify
-        </Link>
-
-        <nav className="flex flex-wrap items-center justify-end gap-2">
-          {NAV_ITEMS.map((item) => (
-            <NavPill
-              key={item.label}
-              label={item.label}
-              href={item.href}
-              active={pathname === item.href}
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-[var(--platform-surface)]/90 font-sans text-white backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link
+            href="/our-platform"
+            className="flex items-center gap-2.5 transition hover:opacity-80"
+            aria-label="Simpnify platform"
+          >
+            <Image
+              src="/simpnify-mark.png"
+              alt=""
+              width={36}
+              height={36}
+              className="h-9 w-9"
+              priority
             />
-          ))}
+            <Image
+              src="/simpnify-wordmark.png"
+              alt="Simpnify"
+              width={140}
+              height={36}
+              className="h-7 w-auto"
+              priority
+            />
+          </Link>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-[#f5f6f8] to-[#dbdee3] px-5 py-2.5 text-sm font-medium text-[#1e1e22] outline-none"
-            >
-              Version
-              <ChevronDown className="size-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-40">
-              <DropdownMenuItem onClick={() => setVersion("1")}>
-                Version 1 {version === "1" ? "✓" : ""}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setVersion("2")}>
-                Version 2 {version === "2" ? "✓" : ""}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </nav>
+          <nav className="hidden lg:block" aria-label="Global">
+            <ul className="flex items-center gap-8 text-sm">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    aria-current={isNavActive(item.href) ? "page" : undefined}
+                    className={navLinkClass(isNavActive(item.href))}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <button
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            onClick={() => setMobileOpen((open) => !open)}
+            className="rounded-sm bg-white/10 p-2 text-white transition hover:bg-secondary/20 lg:hidden"
+          >
+            <span className="sr-only">
+              {mobileOpen ? "Close menu" : "Open menu"}
+            </span>
+            {mobileOpen ? (
+              <X className="size-5" aria-hidden />
+            ) : (
+              <Menu className="size-5" aria-hidden />
+            )}
+          </button>
+        </div>
+
+        {mobileOpen ? (
+          <nav
+            id="mobile-nav"
+            aria-label="Mobile"
+            className="border-t border-white/10 pb-4 lg:hidden"
+          >
+            <ul className="flex flex-col gap-3 pt-4 text-base">
+              {NAV_ITEMS.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    aria-current={isNavActive(item.href) ? "page" : undefined}
+                    className={cn("block", navLinkClass(isNavActive(item.href)))}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
       </div>
     </header>
   );

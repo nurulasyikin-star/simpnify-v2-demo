@@ -1,9 +1,10 @@
 # simpnify-v2-demo
 
-Marketing website **demo** for Simpnify (review only — no API).
+Marketing website for **Simpnify** — industrial & critical infrastructure platform story (screenshot-based demos, no live API).
 
 - **Stack:** Next.js + shadcn/ui + Tailwind
-- **Version switch:** Header → **Version** dropdown → Version 1 / Version 2 (`?v=1` / `?v=2`)
+- **Design:** Dark teal professional theme (`#2998ae` / `#3db8cf`)
+- **Content source:** `Simpnify-Industrial-Critical-Infrastructure` presentation deck
 
 ## Local dev
 
@@ -12,20 +13,29 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000/our-platform?v=2](http://localhost:3000/our-platform?v=2)
+Open [http://localhost:3000/our-platform](http://localhost:3000/our-platform)
 
-## Deploy preview
+### Regenerate images from PDF
 
-- **Vercel (recommended):** Import this GitHub repo → automatic preview on every push/PR
-- **GitHub Pages:** Requires `output: 'export'` in `next.config.ts` (not configured yet)
+```bash
+node scripts/render-pdf-pages.mjs "path/to/deck.pdf" public/platform/source
+node scripts/crop-industrial-pdf.mjs
+```
 
 ## Routes
 
 | Path | Description |
 | --- | --- |
-| `/` | Redirects to `/our-platform?v=2` |
-| `/our-platform?v=1` | V1 reference layout |
-| `/our-platform?v=2` | V2 redesign preview |
+| `/` | Redirects to `/our-platform` |
+| `/our-platform` | Hub — challenge, value, workspaces, demos teaser, SOS, solutions, ROI |
+| `/demos` | Demo hub (7 walkthroughs including Aura & communications) |
+| `/demo` | Redirects to `/demo/sos` (legacy bookmark) |
+| `/demo/sos`, `/demo/aura`, `/demo/communications`, … | Individual product demos |
+| `/solutions` | Industrial scenario hub (4 use cases) |
+| `/platform` | Platform module hub (6 workspaces) |
+| `/why-simpnify` | Illustrative value model & ROI |
+| `/pilot` | Pilot scope & acceptance criteria |
+| `/reference` | Capability checklists, architecture, gallery |
 
 ## Remote
 
