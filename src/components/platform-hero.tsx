@@ -2,6 +2,8 @@ import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { PlatformAccentBar } from "@/components/platform-accent-bar";
+import { siteVisibility } from "@/config/site-visibility";
+import { PLATFORM_INTRO } from "@/lib/platform";
 
 export function PlatformHero() {
   return (
@@ -62,8 +64,16 @@ export function PlatformHero() {
             <div className="aspect-[3/2] overflow-hidden rounded-lg bg-[#0d1418]">
               <div className="relative h-full w-full">
                 <PlatformImage
-                  src="/platform/hero-platform-ui.webp"
-                  alt="Simpnify Floor Plan Studio showing an industrial building sample"
+                  src={
+                    siteVisibility.showFloorPlanHeroScreenshot
+                      ? "/platform/hero-platform-ui.webp"
+                      : PLATFORM_INTRO.image
+                  }
+                  alt={
+                    siteVisibility.showFloorPlanHeroScreenshot
+                      ? "Simpnify Floor Plan Studio showing an industrial building sample"
+                      : PLATFORM_INTRO.alt
+                  }
                   fill
                   className="object-cover object-top"
                   priority

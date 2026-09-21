@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "check:export-images": "node scripts/check-export-images.mjs",
+    "compress:images": "node scripts/compress-images.mjs",
     "start": "next start",
     "lint": "eslint",
     "screenshots:pptx": "node scripts/screenshot-to-pptx.mjs"

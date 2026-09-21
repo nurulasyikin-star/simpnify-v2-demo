@@ -166,6 +166,13 @@ export default function PhotosPage() {
           <a href="/photos/about-pledge" className="text-secondary hover:underline">
             About pledge review
           </a>
+          {" · "}
+          <a
+            href="/photos/platform-redundancy"
+            className="text-secondary hover:underline"
+          >
+            Platform redundancy review
+          </a>
         </p>
       </div>
     </main>

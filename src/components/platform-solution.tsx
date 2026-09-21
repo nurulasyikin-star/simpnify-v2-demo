@@ -1,4 +1,5 @@
 import { PlatformImage } from "@/components/platform-image";
+import { siteVisibility } from "@/config/site-visibility";
 
 import { PLATFORM_SOLUTION } from "@/lib/platform";
 
@@ -6,6 +7,9 @@ import { PlatformSectionHeader } from "./platform-section-header";
 
 export function PlatformSolution() {
   const { eyebrow, title, description, images } = PLATFORM_SOLUTION;
+  const visibleImages = siteVisibility.showMobileSolutionScreenshot
+    ? images
+    : images.filter((img) => !img.src.includes("mobile"));
 
   return (
     <section className="border-t border-white/10 bg-black px-6 py-16 md:px-16 md:py-20">
@@ -16,8 +20,10 @@ export function PlatformSolution() {
           description={description}
         />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {images.map(({ src, alt }) => (
+        <div
+          className={`mt-12 grid gap-6 ${visibleImages.length > 1 ? "sm:grid-cols-2" : ""}`}
+        >
+          {visibleImages.map(({ src, alt }) => (
             <div
               key={src}
               className="platform-product-frame relative w-full animate-in fade-in zoom-in-95 fill-mode-both duration-700"

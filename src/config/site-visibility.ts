@@ -9,6 +9,9 @@ export const siteVisibility = {
   hiddenDemoSlugs: ["floor-plan", "aura", "sos"] as const,
   /** Module spokes with heavy GIS / mobile / AI UI detail */
   hiddenModuleSlugs: ["assets-video", "field", "intelligence"] as const,
+  showDigitalTwinSection: false,
+  showMobileSolutionScreenshot: false,
+  showFloorPlanHeroScreenshot: false,
 } as const;
 
 const HIDDEN_DEMO = new Set<string>(siteVisibility.hiddenDemoSlugs);
