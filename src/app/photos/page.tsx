@@ -180,6 +180,13 @@ export default function PhotosPage() {
           >
             Platform story (Gotham + Help)
           </a>
+          {" · "}
+          <a
+            href="/photos/content-video-hero"
+            className="text-secondary hover:underline"
+          >
+            Content video hero
+          </a>
         </p>
       </div>
     </main>

@@ -1,0 +1,29 @@
+---
+description: Demo mode - skip type checking and linting after coding
+alwaysApply: true
+---
+
+# Demo Mode: Skip Type Checks & Linting
+
+This project is currently in **demo mode**. The priority is a working, visually
+correct, click-through demo — not type safety or lint cleanliness.
+
+- Do NOT run `tsc`, `next build` type-check, `npm run lint`, or similar
+  verification commands after making changes, unless the user explicitly
+  asks for one.
+- Do NOT block on, fix, or report TypeScript/ESLint errors unless they
+  actually break the running demo (e.g. a runtime crash).
+- It's fine to use quick-and-dirty types (`any`, `as`, `@ts-ignore`, loose
+  props) to keep moving — don't spend time refining types.
+- After finishing an implementation task, **stop**. Do not verify, smoke-test,
+  or "confirm" anything unless the user explicitly asks.
+- Do NOT start, restart, or kill the dev server (`npm run dev`, `next dev`, etc.)
+  unless the user explicitly asks — assume one is already running and leave it.
+- Do NOT curl/fetch pages, open browsers, or poll terminals to check that the
+  app renders. Hot reload will pick up changes; the user will look when ready.
+- Skip the entire post-task verification step: no type checks, no lint, no
+  render checks, no dev-server status checks.
+- `next.config.ts` has `typescript.ignoreBuildErrors` and
+  `eslint.ignoreDuringBuilds` set to `true` so `next build`/`next dev` won't
+  fail on type or lint errors. Keep these settings unless the user asks to
+  re-enable strict checks.
