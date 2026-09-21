@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 
 import { PlatformPageShell } from "@/components/platform/page-shell";
 import { HubCardGrid } from "@/components/platform/hub-card-grid";
-import { HUB_PLATFORM_LINKS } from "@/lib/platform";
+import { getPublicHubPlatformLinks } from "@/lib/platform";
+
+const HUB_PLATFORM_LINKS = getPublicHubPlatformLinks();
 
 export const metadata: Metadata = {
   title: "Platform Modules — Simpnify",

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { isModulePublic } from "@/config/site-visibility";
 import { ModuleSpokePage } from "@/components/platform/module-spoke";
 import { MODULE_PAGES, getModuleBySlug } from "@/lib/platform";
 
@@ -9,7 +10,9 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return MODULE_PAGES.map(({ slug }) => ({ slug }));
+  return MODULE_PAGES.filter(({ slug }) => isModulePublic(slug)).map(
+    ({ slug }) => ({ slug }),
+  );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -26,7 +29,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PlatformModulePage({ params }: PageProps) {
   const { slug } = await params;
   const module = getModuleBySlug(slug);
-  if (!module) notFound();
+  if (!module || !isModulePublic(slug)) notFound();
 
   return <ModuleSpokePage module={module} />;
 }
