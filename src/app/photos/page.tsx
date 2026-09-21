@@ -173,6 +173,13 @@ export default function PhotosPage() {
           >
             Platform redundancy review
           </a>
+          {" · "}
+          <a
+            href="/photos/platform-story"
+            className="text-secondary hover:underline"
+          >
+            Platform story (Gotham + Help)
+          </a>
         </p>
       </div>
     </main>
