@@ -2,6 +2,7 @@ import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { FollowUsOn } from "@/components/follow-us-on";
+import { siteVisibility } from "@/config/site-visibility";
 import { legalLinks, type NavItem } from "@/config/site-nav";
 
 const TAGLINE =
@@ -17,7 +18,9 @@ const productLinks: NavItem[] = [
 
 const companyLinks: NavItem[] = [
   { label: "About", href: "/about" },
-  { label: "Partners", href: "/partners" },
+  ...(siteVisibility.showPartnersPage
+    ? [{ label: "Partners", href: "/partners" }]
+    : []),
   { label: "Contact", href: "/contact" },
 ];
 

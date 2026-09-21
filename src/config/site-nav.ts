@@ -3,18 +3,24 @@
 // Footer must NOT repeat these — it should only surface links that
 // aren't already one click away in the header (see footerLinks below).
 
+import { siteVisibility } from "@/config/site-visibility";
+
 export type NavItem = {
   label: string;
   href: string;
 };
 
-export const primaryNav: readonly NavItem[] = [
+const primaryNavAll: readonly NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Features", href: "/demos" },
   { label: "Use Cases", href: "/solutions" },
   { label: "Partners", href: "/partners" },
   { label: "Contact", href: "/contact" },
 ] as const;
+
+export const primaryNav: readonly NavItem[] = primaryNavAll.filter(
+  (item) => item.href !== "/partners" || siteVisibility.showPartnersPage,
+);
 
 // Links that exist but are intentionally NOT in the primary header nav
 // (deeper/secondary pages) — these are the only "explore more" links

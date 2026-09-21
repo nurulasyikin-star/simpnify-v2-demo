@@ -72,12 +72,6 @@ export function PlatformHero() {
               </div>
             </div>
           </div>
-          <Link
-            href="/partners"
-            className="mt-4 text-xs text-platform-muted transition hover:text-secondary"
-          >
-            Delivered in alliance with technology partners
-          </Link>
         </div>
       </div>
     </section>
