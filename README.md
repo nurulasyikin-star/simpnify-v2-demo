@@ -43,3 +43,10 @@ node scripts/crop-industrial-pdf.mjs
 git remote add origin git@github.com:nurulasyikin-star/simpnify-v2-demo.git
 git push -u origin main
 ```
+
+## Branches and live demo
+
+- **`dev`** / **`uat`** — development and review; no public deploy
+- **`main`** — production; updates https://nurulasyikin-star.github.io/simpnify-v2-demo/our-platform/
+
+See **[DEPLOY.md](./DEPLOY.md)** for the promote flow (`dev` → `uat` → `main`).
