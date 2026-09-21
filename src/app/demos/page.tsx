@@ -6,7 +6,7 @@ import { PlatformPageShell } from "@/components/platform/page-shell";
 export const metadata: Metadata = {
   title: "Demos — Simpnify",
   description:
-    "Product walkthroughs with actual UI — Floor Plan Studio, SOS, Aura, communications, guided response and connectors.",
+    "Selected product walkthroughs — response policy, guided response, connectors and communications.",
 };
 
 export default function DemosHubPage() {

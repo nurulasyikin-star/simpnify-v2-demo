@@ -1,3 +1,9 @@
+import {
+  filterPublicHrefs,
+  isDemoPublic,
+  isModulePublic,
+} from "@/config/site-visibility";
+
 import type {
   CarouselSlide,
   CompanyStat,
@@ -470,3 +476,18 @@ export const HUB_PLATFORM_LINKS: HubCard[] = WORKSPACES.map(
     href: `/platform/${slug}`,
   }),
 );
+
+export function getPublicHubExperienceCards(): HubCard[] {
+  return HUB_EXPERIENCE_CARDS.filter((card) => isDemoPublic(card.slug));
+}
+
+export function getPublicHubPlatformLinks(): HubCard[] {
+  return HUB_PLATFORM_LINKS.filter((card) => isModulePublic(card.slug));
+}
+
+export function getPublicIncidentLifecycle(): LifecycleStage[] {
+  return INCIDENT_LIFECYCLE.map((stage) => ({
+    ...stage,
+    modules: filterPublicHrefs(stage.modules),
+  }));
+}

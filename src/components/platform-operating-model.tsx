@@ -1,6 +1,8 @@
 import Link from "next/link";
 
-import { INCIDENT_LIFECYCLE, OPERATING_SUPPORT } from "@/lib/platform";
+import { getPublicIncidentLifecycle, OPERATING_SUPPORT } from "@/lib/platform";
+
+const INCIDENT_LIFECYCLE = getPublicIncidentLifecycle();
 
 import { PlatformSectionHeader } from "./platform-section-header";
 

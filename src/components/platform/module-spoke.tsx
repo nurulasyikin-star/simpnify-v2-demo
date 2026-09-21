@@ -1,12 +1,17 @@
 import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
+import { filterPublicHrefs } from "@/config/site-visibility";
 import { PlatformPageShell } from "@/components/platform/page-shell";
 import { StepPipeline } from "@/components/platform/step-pipeline";
 import { moduleBreadcrumbLabel, modulesTrail } from "@/lib/platform";
 import type { ModulePage } from "@/lib/platform/types";
 
 export function ModuleSpokePage({ module }: { module: ModulePage }) {
+  const relatedDemos = module.relatedDemos
+    ? filterPublicHrefs(module.relatedDemos)
+    : [];
+
   return (
     <PlatformPageShell
       eyebrow={module.eyebrow}
@@ -38,13 +43,13 @@ export function ModuleSpokePage({ module }: { module: ModulePage }) {
           </h2>
           <StepPipeline steps={module.steps} columns={3} />
 
-          {module.relatedDemos && module.relatedDemos.length > 0 ? (
+          {relatedDemos.length > 0 ? (
             <div className="mt-12 platform-glass-card">
               <h2 className="text-sm font-semibold text-secondary">
                 Related demos
               </h2>
               <ul className="mt-4 flex flex-wrap gap-3">
-                {module.relatedDemos.map(({ label, href }) => (
+                {relatedDemos.map(({ label, href }) => (
                   <li key={href}>
                     <Link
                       href={href}

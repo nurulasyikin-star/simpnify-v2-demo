@@ -3,7 +3,9 @@
 import { useState } from "react";
 
 import { DemoStepDetailPanel } from "@/components/platform/demo-step-detail-panel";
-import { HUB_EXPERIENCE_CARDS } from "@/lib/platform";
+import { getPublicHubExperienceCards } from "@/lib/platform";
+
+const HUB_EXPERIENCE_CARDS = getPublicHubExperienceCards();
 
 export function DemosStepRail() {
   const [index, setIndex] = useState(0);
