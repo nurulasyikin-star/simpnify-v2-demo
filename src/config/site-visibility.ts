@@ -4,6 +4,7 @@
  */
 export const siteVisibility = {
   showPartnersPage: false,
+  showUseCaseYouTubeVideos: false,
 } as const;
 
 const BLOCKED_PATHS = new Set<string>(
