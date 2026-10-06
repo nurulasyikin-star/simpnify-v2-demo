@@ -55,9 +55,8 @@ export const CUSTOMER_CHALLENGES = [
 
 export const PLATFORM_INTRO = {
   eyebrow: "INTRO",
-  title: "Simpnify",
-  description:
-    "Simpnify is an unified threats and risks management software platform that integrates physical security, safety and cyber security systems and functions, to enable collaboration and interoperability for enterprise-wide risks and threats handling.",
+  title: "Unified Risk Management Platform",
+  description: "",
   image: "/platform/our-platform-site/monitor-gui.png",
   alt: "Simpnify unified monitoring console showing cameras, maps and alerts on a control room GUI",
 };

@@ -187,6 +187,13 @@ export default function PlatformRedundancyReviewPage() {
             Footer review
           </a>
           {" · "}
+          <a
+            href="/photos/platform-challenge"
+            className="text-secondary hover:underline"
+          >
+            Challenge section review
+          </a>
+          {" · "}
           <a href="/our-platform" className="text-secondary hover:underline">
             Live /our-platform
           </a>

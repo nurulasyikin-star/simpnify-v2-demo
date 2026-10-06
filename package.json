@@ -9,7 +9,8 @@
     "compress:images": "node scripts/compress-images.mjs",
     "start": "next start",
     "lint": "eslint",
-    "screenshots:pptx": "node scripts/screenshot-to-pptx.mjs"
+    "screenshots:pptx": "node scripts/screenshot-to-pptx.mjs",
+    "render:challenge-gif": "node scripts/render-challenge-review-gif.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

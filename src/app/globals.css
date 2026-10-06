@@ -427,6 +427,34 @@
   animation: platform-ken-burns 18s ease-in-out infinite alternate;
 }
 
+.platform-intro-headline {
+  font-size: clamp(2.5rem, 7.25vw, 6.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.platform-intro-headline-word {
+  opacity: 1;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+@keyframes platform-intro-word-highlight {
+  0%,
+  100% {
+    color: #ffffff;
+  }
+  10%,
+  24% {
+    color: var(--secondary);
+  }
+}
+
+.platform-intro-headline-word--highlight {
+  color: #ffffff;
+  animation: platform-intro-word-highlight 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .platform-slider-track {
     scroll-behavior: auto;
@@ -437,5 +465,18 @@
   .platform-status-dot::after,
   .platform-ken-burns {
     animation: none;
+  }
+
+  .platform-intro-headline-word {
+    transform: none !important;
+  }
+
+  .platform-intro-headline-word--highlight {
+    animation: none;
+    color: #ffffff;
+  }
+
+  .platform-intro-headline-word--highlight:last-child {
+    color: var(--secondary);
   }
 }

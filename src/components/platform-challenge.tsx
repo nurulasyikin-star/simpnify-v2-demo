@@ -1,18 +1,16 @@
 import { CUSTOMER_CHALLENGES } from "@/lib/platform";
 
-import { PlatformSectionHeader } from "./platform-section-header";
+import { PlatformChallengeScrollGif } from "./platform-challenge-scroll-gif";
 
 export function PlatformChallenge() {
   return (
-    <section className="border-t border-white/10 bg-[var(--platform-surface)] px-6 py-16 md:px-16 md:py-20">
-      <div className="mx-auto max-w-7xl">
-        <PlatformSectionHeader
-          eyebrow="THE CHALLENGE"
-          title="The expensive gap is between systems"
-          description="A sensor knows. A camera sees. A person responds. Who connects the story?"
-        />
+    <section className="border-t border-white/10 bg-[var(--platform-surface)]">
+      <div className="-mx-0">
+        <PlatformChallengeScrollGif />
+      </div>
 
-        <ul className="mt-12 grid gap-5 md:grid-cols-3">
+      <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-10 md:px-16 md:pb-20">
+        <ul className="grid gap-5 md:grid-cols-3">
           {CUSTOMER_CHALLENGES.map(({ number, title, description }) => (
             <li
               key={number}

@@ -117,6 +117,134 @@ export default function PhotosPage() {
             the bottom of a real page. Pick a letter (A–E) or variant id when
             you&apos;re ready.
           </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Responder SOS black background — globe GIF or a quieter motion
+            field? Open{" "}
+            <a href="/photos/sos-bg" className="font-semibold underline">
+              /photos/sos-bg
+            </a>
+            .
+          </p>
+
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile profile, settings, and auto-lock screens? Open{" "}
+            <a href="/photos/mobile-settings" className="font-semibold underline">
+              /photos/mobile-settings
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile story screens (one shift, C + D combined, with the console view)? Open{" "}
+            <a href="/photos/mobile-story" className="font-semibold underline">
+              /photos/mobile-story
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile modules (Today, Location, Guidance, Briefings)? Open{" "}
+            <a href="/photos/mobile-modules" className="font-semibold underline">
+              /photos/mobile-modules
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile Work module — Work list and Emergency accountability, then
+            the SOTI flow (lockdown, locked role, stuck phone, clear logout)?
+            Open{" "}
+            <a href="/photos/mobile-work" className="font-semibold underline">
+              /photos/mobile-work
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile session — our active-session screen, then the SOTI flow
+            (phone stays on the app, badge, same choice, confirmation)? Open{" "}
+            <a href="/photos/mobile-auth" className="font-semibold underline">
+              /photos/mobile-auth
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile live location — our browser Today and My Live Location, then
+            the SOTI flow (phone stays on the app, badge, same fix, clear
+            logout)? Open{" "}
+            <a href="/photos/mobile-location" className="font-semibold underline">
+              /photos/mobile-location
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile Guidance — our You are clear screen, then the SOTI flow (a
+            nearby offer, the post tag, and help that sends the step and the
+            place)? Open{" "}
+            <a href="/photos/mobile-guidance" className="font-semibold underline">
+              /photos/mobile-guidance
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile inbox — our Mobile Supervisor send screen, then the SOTI flow
+            (the message opens in Inbox, the officer answers, it can wait for
+            signal, and end of shift clears it)? Open{" "}
+            <a href="/photos/mobile-inbox" className="font-semibold underline">
+              /photos/mobile-inbox
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile emergency accountability — our browser form and View picker,
+            then the SOTI flow (badge sets the role, lockdown, stuck phone,
+            clear logout)? Open{" "}
+            <a
+              href="/photos/mobile-accountability"
+              className="font-semibold underline"
+            >
+              /photos/mobile-accountability
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile Shift Handover — our browser form and recipient list, then
+            the SOTI flow (next badge, write the note, note stays offline, clear
+            this phone)? Open{" "}
+            <a href="/photos/mobile-handover" className="font-semibold underline">
+              /photos/mobile-handover
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile lone-worker safety — our browser watch and interval, then
+            the SOTI flow (badge opens the watch, lockdown, late phone, clear
+            logout)? Open{" "}
+            <a href="/photos/mobile-safety" className="font-semibold underline">
+              /photos/mobile-safety
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Mobile equipment — our My Equipment, Field Asset Tasks, and Field
+            Assistant, then the SOTI flow (badge kit, asset label, clear
+            phone)? Open{" "}
+            <a href="/photos/mobile-assets" className="font-semibold underline">
+              /photos/mobile-assets
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            SOTI mobile report and phone images for William? Open{" "}
+            <a href="/photos/soti-mobile" className="font-semibold underline">
+              /photos/soti-mobile
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Looking for the v2 content review (drop v1, PDF copy, Map / AURA /
+            GIS / floor plan / mobile / use cases)? Open{" "}
+            <a href="/photos/v2-content" className="font-semibold underline">
+              /photos/v2-content
+            </a>
+            .
+          </p>
 
           <nav
             aria-label="Footer variant jump links"
@@ -147,6 +275,10 @@ export default function PhotosPage() {
           </code>{" "}
           any time to revisit. Production footer is hidden here so previews
           aren&apos;t doubled.{" "}
+          <a href="/photos/v2-content" className="text-secondary hover:underline">
+            v2 content review
+          </a>
+          {" · "}
           <a href="/photos/demos" className="text-secondary hover:underline">
             Demos step review
           </a>
@@ -172,6 +304,20 @@ export default function PhotosPage() {
             className="text-secondary hover:underline"
           >
             Platform redundancy review
+          </a>
+          {" · "}
+          <a
+            href="/photos/platform-challenge"
+            className="text-secondary hover:underline"
+          >
+            Platform challenge (why choose)
+          </a>
+          {" · "}
+          <a
+            href="/photos/customer-challenge-video"
+            className="text-secondary hover:underline"
+          >
+            Customer challenge → video
           </a>
           {" · "}
           <a

@@ -1,6 +1,14 @@
 import type { HubCard } from "@/lib/platform/types";
+import { publicAsset } from "@/lib/site-path";
 
 import { PlatformScenarioButton } from "./scenario-button";
+
+const STEP_PREVIEWS: Record<string, { src: string; alt: string }> = {
+  "floor-plan": {
+    src: "/platform/floor-plan/final-floor-plan.gif",
+    alt: "Floor Plan Studio with 2D plan, 3D geometry, and device placement",
+  },
+};
 
 export function formatDemoStepLabel(number: string) {
   return `Step ${parseInt(number, 10)}`;
@@ -37,11 +45,22 @@ export function DemoStepDetailContent({
 }
 
 export function DemoStepDetailPanel({ card }: { card: HubCard }) {
+  const preview = STEP_PREVIEWS[card.slug];
+
   return (
     <article className="platform-hub-card">
       <DemoStepDetailContent card={card} includeButton={false} />
+      {preview ? (
+        <div className="mt-5 overflow-hidden rounded-lg border border-white/10 bg-[#071318]">
+          <img
+            src={publicAsset(preview.src)}
+            alt={preview.alt}
+            className="mx-auto block h-auto max-h-[calc(100svh-16rem)] w-full object-contain"
+          />
+        </div>
+      ) : null}
       {card.href ? (
-        <div className="mt-auto flex justify-end pt-5">
+        <div className={preview ? "mt-5 flex justify-end" : "mt-auto flex justify-end pt-5"}>
           <PlatformScenarioButton href={card.href} />
         </div>
       ) : null}

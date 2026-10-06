@@ -6,7 +6,7 @@ export const siteVisibility = {
   showPartnersPage: false,
   showUseCaseYouTubeVideos: false,
   /** Screenshot walkthroughs hidden from Features hub and direct URLs */
-  hiddenDemoSlugs: ["floor-plan", "aura", "sos"] as const,
+  hiddenDemoSlugs: [] as const,
   /** Module spokes with heavy GIS / mobile / AI UI detail */
   hiddenModuleSlugs: ["assets-video", "field", "intelligence"] as const,
   showDigitalTwinSection: false,

@@ -1,4 +1,5 @@
 import { PlatformScenarioButton } from "@/components/platform/scenario-button";
+import { ResponderSosCard } from "@/components/responder-sos-card";
 import { YoutubeEmbed } from "@/components/use-cases/youtube-embed";
 import { siteVisibility } from "@/config/site-visibility";
 import { HUB_SOLUTION_CARDS } from "@/lib/platform";
@@ -28,6 +29,15 @@ export function UseCasesHubContent() {
 
       <div className="flex flex-col gap-6">
         {HUB_SOLUTION_CARDS.map((card) => {
+          if (card.slug === "responder-sos") {
+            return (
+              <ResponderSosCard
+                key={card.slug}
+                number={card.number}
+                title={card.title}
+              />
+            );
+          }
           const video = showVideos ? videoForSlug(card.slug) : undefined;
           return (
             <article

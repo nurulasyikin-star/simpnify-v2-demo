@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
 
-import { PlatformChallenge } from "@/components/platform-challenge";
-import { PlatformCta } from "@/components/platform-cta";
-import { PlatformHero } from "@/components/platform-hero";
-import { PlatformIntro } from "@/components/platform-intro";
-import { PlatformOperatingModel } from "@/components/platform-operating-model";
-import { PlatformSiteChallenges } from "@/components/platform-site-challenges";
-import { PlatformSolution } from "@/components/platform-solution";
-import { PlatformSopDigitalTwin } from "@/components/platform-sop-digital-twin";
-import { PlatformValuePillars } from "@/components/platform-value-pillars";
-import { PlatformWhySimpnify } from "@/components/platform-why-simpnify";
-import { PlatformStatBar } from "@/components/platform/stat-bar";
-import { COMPANY_STATS } from "@/lib/platform";
+import { OurPlatformUseCaseLed } from "@/components/v2-content-variants";
 
 export const metadata: Metadata = {
   title: "Simpnify Platform — Industrial & Critical Infrastructure",
@@ -22,17 +11,7 @@ export const metadata: Metadata = {
 export default function OurPlatformPage() {
   return (
     <main id="main-content" className="pt-16">
-      <PlatformHero />
-      <PlatformStatBar stats={COMPANY_STATS} />
-      <PlatformIntro />
-      <PlatformSiteChallenges />
-      <PlatformChallenge />
-      <PlatformSolution />
-      <PlatformOperatingModel />
-      <PlatformWhySimpnify />
-      <PlatformSopDigitalTwin />
-      <PlatformValuePillars />
-      <PlatformCta />
+      <OurPlatformUseCaseLed />
     </main>
   );
 }
