@@ -17,6 +17,14 @@ const navLinkClass = (isActive: boolean) =>
     isActive ? "text-secondary" : "text-white/90",
   );
 
+const desktopNavLinkClass = (isActive: boolean) =>
+  cn(
+    "block rounded-full px-3.5 py-1.5 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary",
+    isActive
+      ? "bg-gradient-to-b from-[#5ed4e8] to-[#1f7f93] font-semibold text-[#041014] shadow-[0_0_18px_rgba(61,184,207,0.55),inset_0_1px_0_rgba(255,255,255,0.55)]"
+      : "text-white/75 hover:bg-white/10 hover:text-white",
+  );
+
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -38,48 +46,50 @@ export function SiteHeader() {
         <div className="flex h-16 items-center justify-between">
           <Link
             href={SIMPNIFY_HOME}
-            className="flex items-center gap-2.5 transition hover:opacity-80"
+            className="flex items-center gap-2 transition hover:opacity-80"
             aria-label="Simpnify homepage"
           >
             <PlatformImage
               src="/simpnify-mark.png"
               alt=""
-              width={36}
-              height={36}
-              className="h-9 w-9"
+              width={54}
+              height={54}
+              className="h-[54px] w-[54px]"
               priority
             />
-            <PlatformImage
-              src="/simpnify-wordmark.png"
-              alt=""
-              width={140}
-              height={44}
-              className="h-11 w-auto"
-              priority
-            />
-            <span className="flex items-center gap-2">
-              <span className="text-2xl leading-none text-platform-muted">
-                by
-              </span>
+            <span className="flex flex-col items-end pb-2 leading-none">
               <PlatformImage
-                src="/ventionex-logo.png"
+                src="/simpnify-wordmark.png"
                 alt=""
-                width={120}
-                height={32}
-                className="h-8 w-auto mix-blend-screen"
+                width={96}
+                height={36}
+                className="h-9 w-auto"
                 priority
               />
+              <span className="-mt-1 flex items-center gap-1">
+                <span className="text-[12px] font-medium leading-none text-white/80">
+                  by
+                </span>
+                <PlatformImage
+                  src="/ventionex-logo.png"
+                  alt=""
+                  width={58}
+                  height={14}
+                  className="h-3.5 w-auto mix-blend-screen"
+                  priority
+                />
+              </span>
             </span>
           </Link>
 
           <nav className="hidden lg:block" aria-label="Global">
-            <ul className="flex items-center gap-8 text-sm">
+            <ul className="flex items-center gap-0.5 rounded-full bg-white/[0.06] p-1 text-sm shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md">
               {NAV_ITEMS.map((item) => (
                 <li key={item.label}>
                   <Link
                     href={item.href}
                     aria-current={isNavActive(item.href) ? "page" : undefined}
-                    className={navLinkClass(isNavActive(item.href))}
+                    className={desktopNavLinkClass(isNavActive(item.href))}
                   >
                     {item.label}
                   </Link>

@@ -3,6 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 
 import type { CompanyStat } from "@/lib/platform/types";
+import { cn } from "@/lib/utils";
+
+export const COMPANY_STATS_BAND_SURFACE_CLASS =
+  "mx-auto max-w-6xl rounded-2xl border border-white/10 bg-[#0a161d] px-4 py-12 md:px-8 md:py-14";
+
+const STAT_ITEM_BASE =
+  "flex flex-col items-center justify-center px-6 py-1 text-center sm:px-8 md:px-10";
+const STAT_ITEM_DIVIDER =
+  "sm:relative sm:before:pointer-events-none sm:before:absolute sm:before:left-0 sm:before:top-1/2 sm:before:h-[3.25rem] sm:before:w-px sm:before:-translate-y-1/2 sm:before:bg-white/12";
+const STAT_VALUE_CLASS =
+  "font-serif text-[2.75rem] font-semibold leading-none tabular-nums tracking-tight text-secondary md:text-6xl";
+const STAT_LABEL_CLASS =
+  "mt-4 max-w-[11.5rem] font-serif text-[0.8125rem] leading-[1.45] text-platform-muted sm:max-w-xs";
 
 type PlatformStatBarProps = {
   stats: CompanyStat[];
@@ -57,7 +70,20 @@ function useCountUp(target: number, active: boolean, durationMs = 1600) {
   return value;
 }
 
-function AnimatedStat({ value, suffix, label }: CompanyStat) {
+export type PlatformAnimatedStatProps = CompanyStat & {
+  itemClassName?: string;
+  valueClassName?: string;
+  labelClassName?: string;
+};
+
+export function PlatformAnimatedStat({
+  value,
+  suffix,
+  label,
+  itemClassName = STAT_ITEM_BASE,
+  valueClassName = STAT_VALUE_CLASS,
+  labelClassName = STAT_LABEL_CLASS,
+}: PlatformAnimatedStatProps) {
   const itemRef = useRef<HTMLLIElement>(null);
   const [inView, setInView] = useState(false);
   const displayValue = useCountUp(value, inView);
@@ -81,20 +107,12 @@ function AnimatedStat({ value, suffix, label }: CompanyStat) {
   }, []);
 
   return (
-    <li
-      ref={itemRef}
-      className="flex flex-col items-center px-4 py-2 text-center md:items-start md:text-left"
-    >
-      <p
-        className="text-4xl font-semibold tabular-nums text-secondary md:text-5xl"
-        aria-label={`${value}${suffix ?? ""} ${label}`}
-      >
+    <li ref={itemRef} className={itemClassName}>
+      <p className={valueClassName} aria-label={`${value}${suffix ?? ""} ${label}`}>
         <span aria-hidden>{displayValue}</span>
         {suffix ? <span aria-hidden>{suffix}</span> : null}
       </p>
-      <p className="mt-2 max-w-xs text-sm leading-6 text-platform-muted">
-        {label}
-      </p>
+      <p className={labelClassName}>{label}</p>
     </li>
   );
 }
@@ -109,9 +127,13 @@ export function PlatformStatBar({ stats, className }: PlatformStatBarProps) {
       aria-label="Company highlights"
     >
       <div className="mx-auto max-w-7xl">
-        <ul className="grid gap-8 sm:grid-cols-3 sm:gap-6 sm:divide-x sm:divide-white/10">
-          {stats.map((stat) => (
-            <AnimatedStat key={stat.label} {...stat} />
+        <ul className="grid gap-10 sm:grid-cols-3 sm:gap-0">
+          {stats.map((stat, index) => (
+            <PlatformAnimatedStat
+              key={stat.label}
+              {...stat}
+              itemClassName={cn(STAT_ITEM_BASE, index > 0 && STAT_ITEM_DIVIDER)}
+            />
           ))}
         </ul>
       </div>

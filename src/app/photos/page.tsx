@@ -125,6 +125,14 @@ export default function PhotosPage() {
             </a>
             .
           </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            Perimeter intrusion frame while the video isn&apos;t filmed yet
+            (coming-soon options)? Open{" "}
+            <a href="/photos/perimeter-placeholder" className="font-semibold underline">
+              /photos/perimeter-placeholder
+            </a>
+            .
+          </p>
 
           <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
             Mobile profile, settings, and auto-lock screens? Open{" "}
@@ -234,6 +242,13 @@ export default function PhotosPage() {
             SOTI mobile report and phone images for William? Open{" "}
             <a href="/photos/soti-mobile" className="font-semibold underline">
               /photos/soti-mobile
+            </a>
+            .
+          </p>
+          <p className="mt-4 rounded-xl border border-secondary/30 bg-secondary/10 px-4 py-3 text-sm text-secondary">
+            &ldquo;Are you ready?&rdquo; section with office contacts folded in? Open{" "}
+            <a href="/photos/contact-cta" className="font-semibold underline">
+              /photos/contact-cta
             </a>
             .
           </p>

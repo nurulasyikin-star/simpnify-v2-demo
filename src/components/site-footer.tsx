@@ -2,67 +2,17 @@ import { PlatformImage } from "@/components/platform-image";
 import Link from "next/link";
 
 import { FollowUsOn } from "@/components/follow-us-on";
-import { siteVisibility } from "@/config/site-visibility";
-import { legalLinks, type NavItem } from "@/config/site-nav";
+import { legalLinks } from "@/config/site-nav";
 
 const TAGLINE =
   "Unified platform for industrial and critical infrastructure operations.";
-
-const productLinks: NavItem[] = [
-  { label: "Platform overview", href: "/our-platform" },
-  { label: "Modules", href: "/platform" },
-  { label: "Feature", href: "/demos" },
-  { label: "Use Cases", href: "/solutions" },
-  { label: "Deployment", href: "/deployment" },
-];
-
-const companyLinks: NavItem[] = [
-  { label: "About", href: "/about" },
-  ...(siteVisibility.showPartnersPage
-    ? [{ label: "Partners", href: "/partners" }]
-    : []),
-  { label: "Contact", href: "/contact" },
-];
-
-const resourceLinks: NavItem[] = [
-  { label: "Pilot scope", href: "/pilot" },
-  { label: "Reference", href: "/reference" },
-];
-
-function FooterColumn({
-  title,
-  items,
-}: {
-  title: string;
-  items: readonly NavItem[];
-}) {
-  return (
-    <nav>
-      <p className="text-xs font-semibold uppercase tracking-wider text-platform-subtle">
-        {title}
-      </p>
-      <ul className="mt-3 flex flex-col gap-2.5">
-        {items.map(({ label, href }) => (
-          <li key={href}>
-            <Link
-              href={href}
-              className="text-sm text-platform-muted transition hover:text-secondary"
-            >
-              {label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
 
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-white/10 bg-[var(--platform-surface-raised)] px-6 py-10 md:px-16">
       <div className="mx-auto flex max-w-7xl flex-col gap-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="lg:col-span-2">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
             <Link
               href="/our-platform"
               className="flex items-center gap-2.5 transition hover:opacity-80"
@@ -80,14 +30,8 @@ export function SiteFooter() {
             <p className="mt-3 max-w-xs text-sm leading-6 text-platform-muted">
               {TAGLINE}
             </p>
-            <div className="mt-5">
-              <FollowUsOn />
-            </div>
           </div>
-
-          <FooterColumn title="Product" items={productLinks} />
-          <FooterColumn title="Company" items={companyLinks} />
-          <FooterColumn title="Resources" items={resourceLinks} />
+          <FollowUsOn />
         </div>
 
         <div className="flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">

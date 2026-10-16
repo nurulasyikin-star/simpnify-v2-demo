@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { OurPlatformUseCaseLed } from "@/components/v2-content-variants";
+import { LandingGothamScroll } from "@/components/landing-gotham-scroll";
 
 export const metadata: Metadata = {
   title: "Simpnify Platform — Industrial & Critical Infrastructure",
@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function OurPlatformPage() {
   return (
-    <main id="main-content" className="pt-16">
-      <OurPlatformUseCaseLed />
+    <main id="main-content" className="flex-1">
+      <LandingGothamScroll />
     </main>
   );
 }

@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 type PlatformIntroAnimatedHeadlineProps = {
   text: string;
   className?: string;
+  /** Drop the default intro sizing/centering so the caller's classes apply. */
+  unstyled?: boolean;
 };
 
 const SCROLL_PULL = 0.07;
@@ -20,8 +22,13 @@ const COLOR_SWEEP_DURATION_S = 6;
 export function PlatformIntroAnimatedHeadline({
   text,
   className,
+  unstyled = false,
 }: PlatformIntroAnimatedHeadlineProps) {
-  const words = text.trim().split(/\s+/);
+  const lines = text
+    .trim()
+    .split("\n")
+    .map((line) => line.trim().split(/\s+/).filter(Boolean));
+  const words = lines.flat();
   const headlineRef = useRef<HTMLHeadingElement>(null);
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const lastScrollYRef = useRef(0);
@@ -142,27 +149,42 @@ export function PlatformIntroAnimatedHeadline({
     <h2
       ref={headlineRef}
       className={cn(
-        "platform-intro-headline w-full max-w-none text-center font-semibold text-white",
+        unstyled
+          ? "text-white"
+          : "platform-intro-headline w-full max-w-none text-center font-semibold text-white",
         className,
       )}
-      aria-label={text}
+      aria-label={text.replace(/\s+/g, " ")}
     >
-      {words.map((word, index) => (
-        <span
-          key={`${word}-${index}`}
-          ref={(el) => {
-            wordRefs.current[index] = el;
-          }}
-          className={cn(
-            "platform-intro-headline-word platform-intro-headline-word--highlight mr-[0.28em] inline-block last:mr-0",
-          )}
-          style={{
-            animationDelay: `${(index / words.length) * COLOR_SWEEP_DURATION_S}s`,
-          }}
-        >
-          {word}
-        </span>
-      ))}
+      {lines.map((lineWords, lineIndex) => {
+        const offset = lines
+          .slice(0, lineIndex)
+          .reduce((sum, l) => sum + l.length, 0);
+        const rendered = lineWords.map((word, i) => {
+          const index = offset + i;
+          return (
+            <span
+              key={`${word}-${index}`}
+              ref={(el) => {
+                wordRefs.current[index] = el;
+              }}
+              className="platform-intro-headline-word platform-intro-headline-word--highlight mr-[0.28em] inline-block last:mr-0"
+              style={{
+                animationDelay: `${(index / words.length) * COLOR_SWEEP_DURATION_S}s`,
+              }}
+            >
+              {word}
+            </span>
+          );
+        });
+        return lines.length > 1 ? (
+          <span key={lineIndex} className="block">
+            {rendered}
+          </span>
+        ) : (
+          rendered
+        );
+      })}
     </h2>
   );
 }

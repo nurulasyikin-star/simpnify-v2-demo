@@ -2,7 +2,10 @@ import { PlatformImage } from "@/components/platform-image";
 import { Building2, Globe2, Shield, Users } from "lucide-react";
 
 import { AboutPledgeSpotlight } from "@/components/about-pledge-spotlight";
-import { PlatformStatBar } from "@/components/platform/stat-bar";
+import {
+  COMPANY_STATS_BAND_SURFACE_CLASS,
+  PlatformStatBar,
+} from "@/components/platform/stat-bar";
 import { COMPANY_STATS } from "@/lib/platform";
 
 const PILLARS = [
@@ -53,7 +56,7 @@ export function AboutUsContent() {
 
       <PlatformStatBar
         stats={COMPANY_STATS}
-        className="rounded-2xl border border-white/10 bg-[#0c1a22]/60 px-6 py-10 md:px-10"
+        className={COMPANY_STATS_BAND_SURFACE_CLASS}
       />
 
       <div>

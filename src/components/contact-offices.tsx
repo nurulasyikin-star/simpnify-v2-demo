@@ -1,13 +1,13 @@
-type OfficeContact = {
+export type OfficeContact = {
   country: string;
   address: string;
   phones: string[];
   fax?: string;
 };
 
-const EMAIL = "enquiry@simpnify.com";
+export const EMAIL = "enquiry@simpnify.com";
 
-const OFFICES: OfficeContact[] = [
+export const OFFICES: OfficeContact[] = [
   {
     country: "Malaysia",
     address:
@@ -36,7 +36,7 @@ const OFFICES: OfficeContact[] = [
   },
 ];
 
-function toTelHref(phone: string) {
+export function toTelHref(phone: string) {
   return `tel:${phone.replace(/\s/g, "")}`;
 }
 
