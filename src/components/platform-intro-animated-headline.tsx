@@ -9,6 +9,8 @@ type PlatformIntroAnimatedHeadlineProps = {
   className?: string;
   /** Drop the default intro sizing/centering so the caller's classes apply. */
   unstyled?: boolean;
+  /** Words trail the scroll; off keeps only the colour sweep. */
+  drift?: boolean;
 };
 
 const SCROLL_PULL = 0.07;
@@ -23,6 +25,7 @@ export function PlatformIntroAnimatedHeadline({
   text,
   className,
   unstyled = false,
+  drift = true,
 }: PlatformIntroAnimatedHeadlineProps) {
   const lines = text
     .trim()
@@ -49,7 +52,7 @@ export function PlatformIntroAnimatedHeadline({
 
   useEffect(() => {
     const headline = headlineRef.current;
-    if (!headline) return;
+    if (!headline || !drift) return;
 
     reducedMotionRef.current = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -143,7 +146,7 @@ export function PlatformIntroAnimatedHeadline({
       }
       cancelAnimationFrame(rafRef.current);
     };
-  }, [words.length]);
+  }, [words.length, drift]);
 
   return (
     <h2

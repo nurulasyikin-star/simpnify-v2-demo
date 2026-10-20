@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 
@@ -21,10 +30,10 @@ import { cn } from "@/lib/utils";
 const MEDIA = {
   cameras: publicAsset("/platform/landing-story/cameras-to-console-zoomed.mp4"),
   camerasPoster: publicAsset("/platform/landing-story/cameras-poster.jpg"),
-  gis: publicAsset("/platform/landing-story/digital-twins-map.mp4"),
-  gisPoster: publicAsset("/platform/landing-story/digital-twins-poster.jpg"),
-  floor: publicAsset("/platform/floor-plan/final-floor-plan.mp4"),
-  floorPoster: publicAsset("/platform/floor-plan/final-floor-plan-poster.jpg"),
+  gis: publicAsset("/platform/landing-story/system-explorer-2.mp4"),
+  gisPoster: publicAsset("/platform/landing-story/system-explorer-2-poster.jpg"),
+  floor: publicAsset("/platform/floor-plan/operator-floor-plan.webm"),
+  floorPoster: publicAsset("/platform/floor-plan/operator-floor-plan-poster.jpg"),
   patrol: publicAsset("/platform/patrol/jb-office-patrol.mp4"),
   patrolPoster: publicAsset("/platform/patrol/jb-office-patrol-poster.jpg"),
   sos: publicAsset("/platform/scenarios/final-SOS.mp4"),
@@ -33,6 +42,197 @@ const MEDIA = {
   aura: publicAsset("/platform/aura/ai-aura.mp4"),
   auraPoster: publicAsset("/platform/aura/ai-aura-poster.jpg"),
 };
+
+/** De-dithered, 30fps, 1920px remasters of the soft films (tmp/hd-films). */
+const MEDIA_HD: Partial<typeof MEDIA> = {
+  cameras: publicAsset("/platform/landing-story/cameras-to-console-hd.mp4"),
+  camerasPoster: publicAsset("/platform/landing-story/cameras-poster-hd.jpg"),
+  gis: publicAsset("/platform/landing-story/system-explorer-2.mp4"),
+  gisPoster: publicAsset("/platform/landing-story/system-explorer-2-poster.jpg"),
+  floor: publicAsset("/platform/floor-plan/operator-floor-plan.webm"),
+  floorPoster: publicAsset("/platform/floor-plan/operator-floor-plan-poster.jpg"),
+};
+
+/** Encoded width of each clip/still; sized mode never draws past this by much. */
+const MEDIA_WIDTH: Record<string, number> = {
+  [MEDIA.cameras]: 1024,
+  [MEDIA.gis]: 2032,
+  [MEDIA.floor]: 1280,
+  [MEDIA.patrol]: 1920,
+  [MEDIA.sos]: 1920,
+  [MEDIA.fire]: 1920,
+  [MEDIA.aura]: 2030,
+  [MEDIA_HD.cameras!]: 1920,
+  [MEDIA_HD.gis!]: 2032,
+  [MEDIA_HD.floor!]: 1920,
+};
+
+const SIZED_MAX_UPSCALE = 1.15;
+
+export type GothamMode = {
+  /** Compositor-only scroll motion, eased; videos pause off screen; no headline drift. */
+  smooth?: boolean;
+  /** Media capped near its encoded width and letterboxed instead of stretched. */
+  sized?: boolean;
+  /** Short one-shot reveals instead of tall scroll-scrubbed sections. */
+  calm?: boolean;
+  /** Use the remastered 1920px / 30fps films instead of the dithered originals. */
+  hd?: boolean;
+};
+
+const GothamModeContext = createContext<GothamMode>({});
+
+function useMedia() {
+  const { hd } = useContext(GothamModeContext);
+  return hd ? { ...MEDIA, ...MEDIA_HD } : MEDIA;
+}
+
+function easeInOut(t: number) {
+  return t * t * (3 - 2 * t);
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function useScrollProgress(
+  sectionRef: RefObject<HTMLElement | null>,
+  measure: (section: HTMLElement) => number,
+  smooth: boolean | undefined,
+  apply: (eased: number) => void,
+) {
+  const [progress, setProgress] = useState(0);
+  const measureRef = useRef(measure);
+  const applyRef = useRef(apply);
+  measureRef.current = measure;
+  applyRef.current = apply;
+
+  useEffect(() => {
+    const read = () => {
+      const section = sectionRef.current;
+      return section ? measureRef.current(section) : 0;
+    };
+
+    let raf = 0;
+
+    if (!smooth) {
+      const update = () => {
+        raf = 0;
+        setProgress(read());
+      };
+      const onScroll = () => {
+        if (!raf) raf = requestAnimationFrame(update);
+      };
+      update();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll);
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+        window.removeEventListener("resize", onScroll);
+        cancelAnimationFrame(raf);
+      };
+    }
+
+    let current = read();
+    let target = current;
+    let running = false;
+    applyRef.current(easeInOut(current));
+
+    const tick = () => {
+      current += (target - current) * 0.16;
+      if (Math.abs(target - current) < 0.001) {
+        current = target;
+        running = false;
+      }
+      applyRef.current(easeInOut(current));
+      if (running) raf = requestAnimationFrame(tick);
+    };
+    const onScroll = () => {
+      target = read();
+      if (!running) {
+        running = true;
+        raf = requestAnimationFrame(tick);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [smooth, sectionRef]);
+
+  return progress;
+}
+
+/** Opens on the way in, closes on the way back. One screen tall, so scroll is not held. */
+function useReachToggle(
+  enabled: boolean,
+  sectionRef: RefObject<HTMLElement | null>,
+  targetRef: RefObject<HTMLElement | null>,
+  paint: (el: HTMLElement, open: boolean) => void,
+  transition: string,
+) {
+  const paintRef = useRef(paint);
+  paintRef.current = paint;
+
+  useEffect(() => {
+    if (!enabled) return;
+    const section = sectionRef.current;
+    const el = targetRef.current;
+    if (!section || !el) return;
+
+    const reduced = prefersReducedMotion();
+    const draw = (open: boolean) => paintRef.current(el, reduced || open);
+
+    type Zone = "before" | "inside" | "after";
+    const readZone = (): Zone => {
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top >= vh) return "before";
+      if (rect.bottom <= 0) return "after";
+      return "inside";
+    };
+
+    let zone = readZone();
+    let open = reduced || zone !== "before";
+    draw(open);
+    if (!reduced) {
+      requestAnimationFrame(() => {
+        el.style.transition = transition;
+      });
+    }
+
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const dir = y > lastY + 2 ? 1 : y < lastY - 2 ? -1 : 0;
+      lastY = y;
+      const next = readZone();
+      const prev = open;
+      if (dir > 0 && zone === "before" && next !== "before") open = true;
+      if (dir < 0 && zone === "after" && next !== "after") open = false;
+      if (dir < 0 && next === "before" && zone !== "before") open = false;
+      zone = next;
+      if (open !== prev) draw(open);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [enabled, sectionRef, targetRef, transition]);
+}
+
+function Headline(
+  props: Omit<Parameters<typeof PlatformIntroAnimatedHeadline>[0], "drift">,
+) {
+  const { smooth } = useContext(GothamModeContext);
+  return <PlatformIntroAnimatedHeadline {...props} drift={!smooth} />;
+}
 
 /** In-page scroll order → header pill to highlight (matches primaryNav hrefs). */
 const SCROLL_NAV_SEGMENTS: { id: string; href: string }[] = [
@@ -238,12 +438,19 @@ function Frame({
   video,
   position = "center",
   poster,
+  fill = false,
+  contain = false,
 }: {
   src: string;
   video?: boolean;
   position?: "center" | "top";
   poster?: string;
+  /** Draw edge to edge. Skips the sized-mode letterbox. */
+  fill?: boolean;
+  /** Show the whole frame, including its header. No crop. */
+  contain?: boolean;
 }) {
+  const { smooth, sized } = useContext(GothamModeContext);
   const sentinelRef = useRef<HTMLSpanElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -257,24 +464,73 @@ function Frame({
         setShouldLoad(true);
         observer.disconnect();
       },
-      { rootMargin: "600px 0px" },
+      { rootMargin: smooth ? "300px 0px" : "600px 0px" },
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [smooth]);
 
   useEffect(() => {
     if (!shouldLoad || !video) return;
     const node = videoRef.current;
     if (!node) return;
-    const play = node.play();
-    if (play) play.catch(() => {});
-  }, [shouldLoad, video]);
+    if (!smooth) {
+      const play = node.play();
+      if (play) play.catch(() => {});
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return;
+        if (entry.isIntersecting) node.play()?.catch(() => {});
+        else node.pause();
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [shouldLoad, video, smooth]);
+
+  const sourceWidth = MEDIA_WIDTH[src];
+  const capped = Boolean(sized && sourceWidth && !fill && !contain);
 
   const fit =
     position === "top"
       ? "object-cover object-top"
       : "object-cover object-center";
+  const mediaClass = contain
+    ? "max-h-full max-w-full object-contain"
+    : capped
+      ? "h-auto max-h-full w-full object-contain"
+      : `absolute inset-0 h-full w-full ${fit}`;
+  const mediaStyle = capped
+    ? { maxWidth: `min(100%, ${Math.round(sourceWidth * SIZED_MAX_UPSCALE)}px)` }
+    : undefined;
+
+  const media =
+    shouldLoad && video ? (
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload={smooth ? "metadata" : "auto"}
+        className={mediaClass}
+        style={mediaStyle}
+      />
+    ) : shouldLoad && !video ? (
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className={mediaClass}
+        style={mediaStyle}
+      />
+    ) : null;
 
   return (
     <>
@@ -283,28 +539,13 @@ function Frame({
         aria-hidden
         className="pointer-events-none absolute inset-0"
       />
-      {shouldLoad && video ? (
-        <video
-          ref={videoRef}
-          src={src}
-          poster={poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className={`absolute inset-0 h-full w-full ${fit}`}
-        />
-      ) : null}
-      {shouldLoad && !video ? (
-        <img
-          src={src}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className={`absolute inset-0 h-full w-full ${fit}`}
-        />
-      ) : null}
+      {contain || capped ? (
+        <div className="absolute inset-0 flex items-center justify-center bg-black">
+          {media}
+        </div>
+      ) : (
+        media
+      )}
     </>
   );
 }
@@ -320,36 +561,100 @@ function ScrollReveal({
   video?: boolean;
   poster?: string;
 }) {
+  const { smooth } = useContext(GothamModeContext);
   const sectionRef = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
+  const innerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const section = sectionRef.current;
-      if (!section) return;
+  const progress = useScrollProgress(
+    sectionRef,
+    (section) => {
       const vh = window.innerHeight;
       const rect = section.getBoundingClientRect();
       const start = vh * 0.6;
       const end = -(rect.height - vh) * 0.8;
       const t = (start - rect.top) / (start - end);
-      setProgress(Math.min(1, Math.max(0, t)));
+      return Math.min(1, Math.max(0, t));
+    },
+    smooth,
+    () => {},
+  );
+
+  useEffect(() => {
+    if (!smooth) return;
+    const section = sectionRef.current;
+    const el = innerRef.current;
+    if (!section || !el) return;
+
+    const reduced = prefersReducedMotion();
+    const paint = (open: boolean) => {
+      const scale = reduced || open ? 1 : 0.8;
+      const t = (scale - 0.8) / 0.2;
+      el.style.transform = `scale(${scale})`;
+      el.style.borderRadius = `${(18 * (1 - t)) / scale}px`;
     };
+
+    type Zone = "before" | "inside" | "after";
+    const readZone = (): Zone => {
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top >= vh * 0.92) return "before";
+      if (rect.bottom <= vh * 0.08) return "after";
+      return "inside";
+    };
+
+    let zone = readZone();
+    let open = reduced || zone !== "before";
+    paint(open);
+    if (!reduced) {
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.7s cubic-bezier(0.4, 0, 0.2, 1)";
+      });
+    }
+
+    let lastY = window.scrollY;
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      const y = window.scrollY;
+      const dir = y > lastY + 2 ? 1 : y < lastY - 2 ? -1 : 0;
+      lastY = y;
+      const next = readZone();
+      if (dir > 0 && zone === "before" && next !== "before") open = true;
+      if (dir < 0) {
+        const rect = section.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+        if (visible <= 0 || (rect.top > 0 && visible < vh * 0.4)) open = false;
+        else open = true;
+      }
+      zone = next;
+      paint(open);
     };
-    update();
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [smooth]);
 
-  const eased = progress * progress * (3 - 2 * progress);
+  if (smooth) {
+    return (
+      <section id={id} ref={sectionRef} className="relative h-screen bg-black">
+        <div className="sticky top-0 h-screen overflow-hidden">
+          <div
+            ref={innerRef}
+            className="absolute inset-0 origin-center overflow-hidden will-change-transform"
+            style={{ transform: "scale(0.8)", borderRadius: 22.5 }}
+          >
+            <Frame src={src} video={video} poster={poster} fill />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const eased = easeInOut(progress);
   const lerp = (from: number, to: number) => from + (to - from) * eased;
   const insetY = lerp(30, 0);
   const insetX = lerp(32, 0);
@@ -371,6 +676,13 @@ function ScrollReveal({
   );
 }
 
+/** 0 = half width, centered. 1 = full screen width. */
+function auraWindow(eased: number) {
+  const scale = 0.5 + 0.5 * eased;
+  const insetX = ((1 - scale) / 2) * 100;
+  return `inset(0% ${insetX.toFixed(2)}% 0% ${insetX.toFixed(2)}%)`;
+}
+
 function AuraReveal({
   id,
   title,
@@ -382,65 +694,126 @@ function AuraReveal({
   src: string;
   poster?: string;
 }) {
+  const { smooth } = useContext(GothamModeContext);
   const sectionRef = useRef<HTMLElement>(null);
-  const [progress, setProgress] = useState(0);
+  const innerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    if (reduced) {
-      setProgress(1);
-      return;
-    }
-
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const section = sectionRef.current;
-      if (!section) return;
+  const progress = useScrollProgress(
+    sectionRef,
+    (section) => {
+      if (prefersReducedMotion()) return 1;
       const vh = window.innerHeight;
       const rect = section.getBoundingClientRect();
       const travel = Math.max(vh, rect.height - vh);
       const scrolled = Math.min(travel, Math.max(0, -rect.top));
-      setProgress(scrolled / travel);
+      return scrolled / travel;
+    },
+    smooth,
+    () => {},
+  );
+
+  useLayoutEffect(() => {
+    if (!smooth) return;
+    const section = sectionRef.current;
+    const el = innerRef.current;
+    if (!section || !el) return;
+
+    const reduced = prefersReducedMotion();
+    const startScale = 0.8;
+    const paint = (open: boolean) => {
+      const scale = reduced || open ? 1 : startScale;
+      const t = (scale - startScale) / (1 - startScale);
+      el.style.clipPath = "none";
+      el.style.transform = `scale(${scale})`;
+      el.style.borderRadius = `${(18 * (1 - t)) / scale}px`;
     };
+
+    const frame = el.parentElement ?? el;
+    type Zone = "before" | "inside" | "after";
+    const metrics = () => {
+      const rect = frame.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const visible = Math.min(rect.bottom, vh) - Math.max(rect.top, 0);
+      const full = frame.offsetHeight || rect.height;
+      return { rect, vh, visible, full };
+    };
+    const readZone = (): Zone => {
+      const { rect, vh } = metrics();
+      if (rect.bottom <= 0) return "after";
+      if (rect.top >= vh) return "before";
+      return "inside";
+    };
+
+    let zone = readZone();
+    let open = reduced || zone !== "before";
+    paint(open);
+    if (!reduced) {
+      requestAnimationFrame(() => {
+        el.style.transition =
+          "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), border-radius 0.7s cubic-bezier(0.4, 0, 0.2, 1)";
+      });
+    }
+
+    let lastY = window.scrollY;
     const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      const y = window.scrollY;
+      const down = y > lastY + 8;
+      const up = y < lastY;
+      lastY = y;
+      const next = readZone();
+      const wasOpen = open;
+      if (down && zone === "before" && next !== "before") open = true;
+      if (up) {
+        const { visible } = metrics();
+        open = visible > 0;
+      }
+      zone = next;
+      if (open !== wasOpen) paint(open);
     };
-    update();
+
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [smooth]);
 
-  const eased = progress * progress * (3 - 2 * progress);
-  const lerp = (from: number, to: number) => from + (to - from) * eased;
-  const halfW = lerp(18, 50);
-  const top = lerp(40, 0);
-  const bottom = lerp(118, 100);
-  const skew = lerp(16, 0);
-  const left = 50 - halfW;
-  const right = 50 + halfW;
-  const polygon = `polygon(${left + skew}% ${top}%, ${right + skew}% ${top}%, ${right - skew}% ${bottom}%, ${left - skew}% ${bottom}%)`;
+  if (smooth) {
+    return (
+      <section id={id} ref={sectionRef} className="relative bg-black">
+        <Headline
+          unstyled
+          text={title}
+          className="px-6 pb-6 pt-20 text-[clamp(2.4rem,5.5vw,5.25rem)] font-medium leading-[0.92] tracking-[-0.03em] md:px-16 md:pb-8 md:pt-24"
+        />
+        <div className="relative h-screen w-full overflow-hidden">
+          <div
+            ref={innerRef}
+            className="absolute inset-0 origin-center overflow-hidden bg-[#071014] will-change-transform"
+          >
+            <Frame src={src} video poster={poster} fill />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const eased = easeInOut(progress);
   return (
     <section id={id} ref={sectionRef} className="relative h-[280vh] bg-black">
       <div className="sticky top-0 flex h-screen flex-col overflow-hidden">
-        <PlatformIntroAnimatedHeadline
+        <Headline
           unstyled
           text={title}
           className="shrink-0 px-6 pb-6 pt-20 text-[clamp(2.4rem,5.5vw,5.25rem)] font-medium leading-[0.92] tracking-[-0.03em] md:px-16 md:pb-8 md:pt-24"
         />
         <div className="relative min-h-0 flex-1">
           <div
-            className="absolute inset-0 bg-[#071014] will-change-[clip-path]"
-            style={{ clipPath: polygon }}
+            className="absolute inset-0 overflow-hidden bg-[#071014] will-change-[clip-path]"
+            style={{ clipPath: auraWindow(eased), transform: "none" }}
           >
-            <Frame src={src} video poster={poster} />
+            <Frame src={src} video poster={poster} contain />
           </div>
         </div>
       </div>
@@ -459,43 +832,57 @@ function HexReveal({
   src: string;
   poster?: string;
 }) {
+  const { smooth } = useContext(GothamModeContext);
   const sectionRef = useRef<HTMLElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
+  const innerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 0, h: 0 });
 
-  useEffect(() => {
-    const reduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const section = sectionRef.current;
+  const progress = useScrollProgress(
+    sectionRef,
+    (section) => {
       const box = frameRef.current;
-      if (!section || !box) return;
+      if (box && !smooth) setSize({ w: box.clientWidth, h: box.clientHeight });
+      if (prefersReducedMotion()) return 1;
       const vh = window.innerHeight;
       const rect = section.getBoundingClientRect();
       const travel = Math.max(vh, rect.height - vh);
       const scrolled = Math.min(travel, Math.max(0, -rect.top));
-      setProgress(reduced ? 1 : scrolled / travel);
-      setSize({ w: box.clientWidth, h: box.clientHeight });
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
+      return scrolled / travel;
+    },
+    smooth,
+    () => {},
+  );
 
-  const eased = progress * progress * (3 - 2 * progress);
+  useReachToggle(
+    smooth,
+    sectionRef,
+    innerRef,
+    (el) => {
+      el.style.transform = "scale(1)";
+    },
+    "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
+  );
+
+  if (smooth) {
+    return (
+      <section id={id} ref={sectionRef} className="relative bg-black">
+        <h2 className="whitespace-pre-line px-6 pb-6 pt-20 text-[clamp(2.4rem,5.5vw,5.25rem)] font-medium leading-[0.92] tracking-[-0.03em] text-white md:px-16 md:pb-8 md:pt-24">
+          {title}
+        </h2>
+        <div ref={frameRef} className="relative w-full">
+          <div
+            ref={innerRef}
+            className="relative aspect-[3840/1856] w-full overflow-hidden bg-[#071014]"
+          >
+            <Frame src={src} video poster={poster} fill />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const eased = easeInOut(progress);
   const cx = size.w / 2;
   const cy = size.h / 2;
   const startScale = 0.65;
@@ -561,7 +948,7 @@ function OpsSplit({
             : "lg:grid-cols-[minmax(240px,0.7fr)_minmax(0,1.3fr)]"
         }`}
       >
-        <PlatformIntroAnimatedHeadline
+        <Headline
           unstyled
           text={title}
           className={`text-[clamp(3.25rem,6.5vw,5.75rem)] font-semibold leading-[0.9] tracking-[-0.04em] ${
@@ -581,7 +968,68 @@ function OpsSplit({
   );
 }
 
+function CalmBeat({
+  id,
+  title,
+  src,
+  poster,
+}: {
+  id: string;
+  title?: string;
+  src: string;
+  poster?: string;
+}) {
+  const ref = useRef<HTMLElement>(null);
+  const [shown, setShown] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    if (prefersReducedMotion()) {
+      setShown(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setShown(true);
+        observer.disconnect();
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <section
+      id={id}
+      ref={ref}
+      className="scroll-mt-20 bg-black px-6 py-16 md:px-16 md:py-24"
+    >
+      {title ? (
+        <Headline
+          unstyled
+          text={title}
+          className="mx-auto max-w-[1280px] text-[clamp(2.4rem,5.5vw,5.25rem)] font-medium leading-[0.92] tracking-[-0.03em]"
+        />
+      ) : null}
+      <div
+        className={cn(
+          "relative mx-auto aspect-video max-w-[1280px] overflow-hidden rounded-[10px] bg-[#0b0b0b] shadow-[0_0_28px_rgba(61,184,207,0.45),0_12px_40px_rgba(0,0,0,0.6)] transition duration-[900ms] ease-out",
+          title ? "mt-8 md:mt-10" : "",
+          shown ? "translate-y-0 scale-100 opacity-100" : "translate-y-8 scale-[0.96] opacity-0",
+        )}
+      >
+        <Frame src={src} video poster={poster} />
+      </div>
+    </section>
+  );
+}
+
 function GateHero({ children }: { children?: ReactNode }) {
+  const { sized } = useContext(GothamModeContext);
+  const media = useMedia();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -607,13 +1055,27 @@ function GateHero({ children }: { children?: ReactNode }) {
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <video
             ref={videoRef}
-            src={MEDIA.cameras}
-            poster={MEDIA.camerasPoster}
+            src={media.cameras}
+            poster={media.camerasPoster}
             autoPlay
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 h-full w-full object-cover"
+            className={
+              sized
+                ? "absolute left-1/2 top-[40%] h-auto w-[min(100%,1180px)] -translate-x-1/2 -translate-y-1/2"
+                : "absolute inset-0 h-full w-full object-cover"
+            }
+            style={
+              sized
+                ? {
+                    maskImage:
+                      "radial-gradient(ellipse 70% 70% at center, black 55%, transparent 100%)",
+                    WebkitMaskImage:
+                      "radial-gradient(ellipse 70% 70% at center, black 55%, transparent 100%)",
+                  }
+                : undefined
+            }
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/45 to-black/25" />
         </div>
@@ -652,7 +1114,17 @@ function GateHero({ children }: { children?: ReactNode }) {
   );
 }
 
-export function LandingGothamScroll() {
+export function LandingGothamScroll({ mode = {} }: { mode?: GothamMode }) {
+  return (
+    <GothamModeContext.Provider value={mode}>
+      <LandingGothamScrollBody />
+    </GothamModeContext.Provider>
+  );
+}
+
+function LandingGothamScrollBody() {
+  const mode = useContext(GothamModeContext);
+  const MEDIA = useMedia();
   const [showSiteNav, setShowSiteNav] = useState(false);
   const [activeNavHref, setActiveNavHref] = useState<string | null>(null);
   useEffect(() => {
@@ -674,14 +1146,26 @@ export function LandingGothamScroll() {
       setActiveNavHref(href);
     };
 
+    let raf = 0;
+    const onScroll = mode.smooth
+      ? () => {
+          if (raf) return;
+          raf = requestAnimationFrame(() => {
+            raf = 0;
+            syncScrollState();
+          });
+        }
+      : syncScrollState;
+
     syncScrollState();
-    window.addEventListener("scroll", syncScrollState, { passive: true });
-    window.addEventListener("resize", syncScrollState);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
     return () => {
-      window.removeEventListener("scroll", syncScrollState);
-      window.removeEventListener("resize", syncScrollState);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [mode.smooth]);
 
   return (
     <div className="relative bg-black text-white">
@@ -697,36 +1181,56 @@ export function LandingGothamScroll() {
             className={COMPANY_STATS_BAND_SURFACE_CLASS}
           />
           <div className="mx-auto mt-20 max-w-6xl md:mt-32">
-            <PlatformIntroAnimatedHeadline text={PLATFORM_INTRO.title} />
-            <div className="mt-24 md:mt-36">
-              <AboutPledgeSpotlight />
-            </div>
+            <Headline text={PLATFORM_INTRO.title} />
+          </div>
+          <div className="mt-24 w-full md:mt-36">
+            <AboutPledgeSpotlight />
           </div>
         </section>
       </GateHero>
 
-      <ScrollReveal
-        id="explorer"
-        src={MEDIA.gis}
-        video
-        poster={MEDIA.gisPoster}
-      />
-      <SectionGap />
-      <AuraReveal
-        id="aura"
-        title={"AI-driven\nsite superiority"}
-        src={MEDIA.aura}
-        poster={MEDIA.auraPoster}
-      />
+      {mode.calm ? (
+        <>
+          <CalmBeat id="explorer" src={MEDIA.gis} poster={MEDIA.gisPoster} />
+          <CalmBeat
+            id="aura"
+            title={"AI-driven\nsite superiority"}
+            src={MEDIA.aura}
+            poster={MEDIA.auraPoster}
+          />
+          <CalmBeat
+            id="scroll-floor"
+            title={"The building\nis the picture"}
+            src={MEDIA.floor}
+            poster={MEDIA.floorPoster}
+          />
+        </>
+      ) : (
+        <>
+          <ScrollReveal
+            id="explorer"
+            src={MEDIA.gis}
+            video
+            poster={MEDIA.gisPoster}
+          />
+          <SectionGap />
+          <AuraReveal
+            id="aura"
+            title={"AI-driven\nsite superiority"}
+            src={MEDIA.aura}
+            poster={MEDIA.auraPoster}
+          />
 
-      <SectionGap />
+          <SectionGap />
 
-      <HexReveal
-        id="scroll-floor"
-        title={"The building\nis the picture"}
-        src={MEDIA.floor}
-        poster={MEDIA.floorPoster}
-      />
+          <HexReveal
+            id="scroll-floor"
+            title={"The building\nis the picture"}
+            src={MEDIA.floor}
+            poster={MEDIA.floorPoster}
+          />
+        </>
+      )}
       <SectionGap />
       <section
         id="scroll-mobile"
@@ -736,7 +1240,7 @@ export function LandingGothamScroll() {
         <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-secondary">
           Mobile apps
         </p>
-        <PlatformIntroAnimatedHeadline
+        <Headline
           unstyled
           text={"The patrol\nanswers in hand"}
           className="mt-4 max-w-5xl text-[clamp(2.6rem,5.5vw,5.25rem)] font-medium leading-[0.92] tracking-[-0.03em]"

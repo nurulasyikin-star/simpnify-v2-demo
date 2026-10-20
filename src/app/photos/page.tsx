@@ -348,6 +348,13 @@ export default function PhotosPage() {
           >
             Content video hero
           </a>
+          {" · "}
+          <a
+            href="/photos/platform-motion"
+            className="text-secondary hover:underline"
+          >
+            Platform motion and pictures
+          </a>
         </p>
       </div>
     </main>

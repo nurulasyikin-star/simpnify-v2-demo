@@ -6,7 +6,7 @@ import type { CompanyStat } from "@/lib/platform/types";
 import { cn } from "@/lib/utils";
 
 export const COMPANY_STATS_BAND_SURFACE_CLASS =
-  "mx-auto max-w-6xl rounded-2xl border border-white/10 bg-[#0a161d] px-4 py-12 md:px-8 md:py-14";
+  "w-full rounded-2xl border border-white/10 bg-[#0a161d] px-4 py-12 md:px-8 md:py-14";
 
 const STAT_ITEM_BASE =
   "flex flex-col items-center justify-center px-6 py-1 text-center sm:px-8 md:px-10";

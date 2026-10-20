@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function OurPlatformPage() {
   return (
     <main id="main-content" className="flex-1">
-      <LandingGothamScroll />
+      <LandingGothamScroll mode={{ smooth: true, hd: true, sized: true }} />
     </main>
   );
 }

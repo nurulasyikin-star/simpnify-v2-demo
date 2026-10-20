@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
         destination: "/reports/:path*",
         permanent: false,
       },
+      {
+        source: "/photos/:path*",
+        destination: `/${repo}/photos/:path*`,
+        permanent: false,
+        basePath: false,
+      },
     ];
   },
   // Demo mode: don't let type or lint errors block builds.
