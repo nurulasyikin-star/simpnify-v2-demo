@@ -30,12 +30,12 @@ import { cn } from "@/lib/utils";
 const MEDIA = {
   cameras: publicAsset("/platform/landing-story/cameras-to-console-zoomed.mp4"),
   camerasPoster: publicAsset("/platform/landing-story/cameras-poster.jpg"),
-  gis: publicAsset("/platform/landing-story/system-explorer-2.mp4"),
-  gisPoster: publicAsset("/platform/landing-story/system-explorer-2-poster.jpg"),
+  gis: publicAsset("/platform/landing-story/system-explorer-271026.mp4"),
+  gisPoster: publicAsset("/platform/landing-story/system-explorer-271026-poster.jpg"),
   floor: publicAsset("/platform/floor-plan/operator-floor-plan.webm"),
   floorPoster: publicAsset("/platform/floor-plan/operator-floor-plan-poster.jpg"),
-  patrol: publicAsset("/platform/patrol/jb-office-patrol.mp4"),
-  patrolPoster: publicAsset("/platform/patrol/jb-office-patrol-poster.jpg"),
+  patrol: publicAsset("/platform/patrol/patrol-combined-v2.mp4"),
+  patrolPoster: publicAsset("/platform/patrol/patrol-combined-v2-poster.jpg"),
   sos: publicAsset("/platform/scenarios/final-SOS.mp4"),
   perimeter: publicAsset("/platform/scenarios/scenario-01-perimeter.webp"),
   fire: publicAsset("/platform/our-platform-site/digital-twin.png"),
@@ -47,8 +47,8 @@ const MEDIA = {
 const MEDIA_HD: Partial<typeof MEDIA> = {
   cameras: publicAsset("/platform/landing-story/cameras-to-console-hd.mp4"),
   camerasPoster: publicAsset("/platform/landing-story/cameras-poster-hd.jpg"),
-  gis: publicAsset("/platform/landing-story/system-explorer-2.mp4"),
-  gisPoster: publicAsset("/platform/landing-story/system-explorer-2-poster.jpg"),
+  gis: publicAsset("/platform/landing-story/system-explorer-271026.mp4"),
+  gisPoster: publicAsset("/platform/landing-story/system-explorer-271026-poster.jpg"),
   floor: publicAsset("/platform/floor-plan/operator-floor-plan.webm"),
   floorPoster: publicAsset("/platform/floor-plan/operator-floor-plan-poster.jpg"),
 };
@@ -56,14 +56,14 @@ const MEDIA_HD: Partial<typeof MEDIA> = {
 /** Encoded width of each clip/still; sized mode never draws past this by much. */
 const MEDIA_WIDTH: Record<string, number> = {
   [MEDIA.cameras]: 1024,
-  [MEDIA.gis]: 2032,
+  [MEDIA.gis]: 1920,
   [MEDIA.floor]: 1280,
   [MEDIA.patrol]: 1920,
   [MEDIA.sos]: 1920,
   [MEDIA.fire]: 1920,
-  [MEDIA.aura]: 2030,
+  [MEDIA.aura]: 1920,
   [MEDIA_HD.cameras!]: 1920,
-  [MEDIA_HD.gis!]: 2032,
+  [MEDIA_HD.gis!]: 1920,
   [MEDIA_HD.floor!]: 1920,
 };
 
